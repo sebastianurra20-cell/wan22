@@ -121,7 +121,7 @@ def handler(job):
         # Base64인 경우 디코딩하여 저장
         try:
             os.makedirs(task_id, exist_ok=True)
-            image_path = os.path.join(task_id, "input_image.jpg")
+            image_path = os.path.join("/",task_id, "input_image.jpg")
             decoded_data = base64.b64decode(image_base64_input)
             with open(image_path, 'wb') as f:
                 f.write(decoded_data)
