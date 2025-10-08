@@ -164,6 +164,7 @@ def handler(job):
     prompt["830"]["inputs"]["cfg"] = job_input["cfg"]
     prompt["849"]["inputs"]["value"] = job_input["width"]
     prompt["848"]["inputs"]["value"] = job_input["height"]
+    prompt["277"]["inputs"]["frame_rate"] = job_input["fps"]
     
     # step 설정 적용
     if "834" in prompt:
