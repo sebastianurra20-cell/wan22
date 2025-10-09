@@ -43,11 +43,6 @@ RUN cd /ComfyUI/custom_nodes && \
     git clone https://github.com/kijai/ComfyUI-WanVideoWrapper && \
     cd ComfyUI-WanVideoWrapper && \
     pip install -r requirements.txt
-    
-RUN cd /ComfyUI/custom_nodes && \
-    git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation && \
-    cd ComfyUI-Frame-Interpolation && \
-    pip install -r requirements-no-cupy.txt
 
 COPY --from=model_provider /models/vae /ComfyUI/models/vae
 COPY --from=model_provider /models/text_encoders /ComfyUI/models/text_encoders
