@@ -1,0 +1,237 @@
+{
+  "122": {
+    "inputs": {
+      "model": "Wan2_2-T2V-A14B-HIGH_fp8_e4m3fn_scaled_KJ.safetensors",
+      "base_precision": "bf16",
+      "quantization": "disabled",
+      "load_device": "offload_device",
+      "attention_mode": "sageattn",
+      "rms_norm_function": "default"
+    },
+    "class_type": "WanVideoModelLoader",
+    "_meta": { "title": "WanVideo Model Loader (T2V HIGH)" }
+  },
+  "129": {
+    "inputs": {
+      "model_name": "Wan2_1_VAE_bf16.safetensors",
+      "precision": "bf16"
+    },
+    "class_type": "WanVideoVAELoader",
+    "_meta": { "title": "WanVideo VAE Loader" }
+  },
+  "135": {
+    "inputs": {
+      "positive_prompt": "a cinematic view of a city at night, raining, neon reflections",
+      "negative_prompt": "low quality, bad lighting, static, blurry, distorted, text, watermark",
+      "force_offload": true,
+      "use_disk_cache": false,
+      "device": "gpu",
+      "t5": [ "136", 0 ]
+    },
+    "class_type": "WanVideoTextEncode",
+    "_meta": { "title": "WanVideo TextEncode" }
+  },
+  "136": {
+    "inputs": {
+      "model_name": "umt5-xxl-enc-bf16.safetensors",
+      "precision": "bf16",
+      "load_device": "offload_device",
+      "quantization": "disabled"
+    },
+    "class_type": "LoadWanVideoT5TextEncoder",
+    "_meta": { "title": "WanVideo T5 Text Encoder Loader" }
+  },
+  "220": {
+    "inputs": {
+      "steps": [ "569", 0 ],
+      "cfg": [ "570", 0 ],
+      "shift": 9.0,
+      "seed": 123456789,
+      "force_offload": true,
+      "scheduler": "dpm++_sde",
+      "riflex_freq_index": 0,
+      "denoise_strength": 1,
+      "batched_cfg": false,
+      "rope_function": "comfy",
+      "start_step": 0,
+      "end_step": [ "575", 0 ],
+      "add_noise_to_samples": true,
+      "model": [ "556", 0 ],
+      "text_embeds": [ "135", 0 ],
+      "context_options": [ "498", 0 ]
+    },
+    "class_type": "WanVideoSampler",
+    "_meta": { "title": "WanVideo Sampler (HIGH)" }
+  },
+  "235": {
+    "inputs": { "value": 480 },
+    "class_type": "INTConstant",
+    "_meta": { "title": "INT Constant (Height)" }
+  },
+  "236": {
+    "inputs": { "value": 832 },
+    "class_type": "INTConstant",
+    "_meta": { "title": "INT Constant (Width)" }
+  },
+  "279": {
+    "inputs": {
+      "lora_0": "high_noise_model.safetensors",
+      "strength_0": 1,
+      "lora_1": "none",
+      "strength_1": 1,
+      "lora_2": "none",
+      "strength_2": 0.8,
+      "lora_3": "none",
+      "strength_3": 1,
+      "lora_4": "none",
+      "strength_4": 1,
+      "low_mem_load": false,
+      "merge_loras": false
+    },
+    "class_type": "WanVideoLoraSelectMulti",
+    "_meta": { "title": "WanVideo LoRA Select Multi (HIGH)" }
+  },
+  "498": {
+    "inputs": {
+      "context_schedule": "static_standard",
+      "context_frames": 121,
+      "context_stride": 4,
+      "context_overlap": 48,
+      "freenoise": true,
+      "verbose": false,
+      "fuse_method": "linear"
+    },
+    "class_type": "WanVideoContextOptions",
+    "_meta": { "title": "WanVideo Context Options" }
+  },
+  "525": {
+    "inputs": {
+      "blocks_to_swap": 25,
+      "enable_cuda_optimization": true,
+      "enable_dram_optimization": true,
+      "auto_hardware_tuning": false,
+      "vram_threshold_percent": 50,
+      "num_cuda_streams": 6,
+      "bandwidth_target": 0.8
+    },
+    "class_type": "WanVideoEnhancedBlockSwap",
+    "_meta": { "title": "WanVideo Enhanced BlockSwap" }
+  },
+  "540": {
+    "inputs": {
+      "steps": [ "569", 0 ],
+      "cfg": 1.0,
+      "shift": 9.0,
+      "seed": 987654321,
+      "force_offload": true,
+      "scheduler": "dpm++_sde",
+      "denoise_strength": 1,
+      "batched_cfg": false,
+      "start_step": [ "575", 0 ],
+      "end_step": -1,
+      "add_noise_to_samples": false,
+      "model": [ "552", 0 ],
+      "text_embeds": [ "135", 0 ],
+      "samples": [ "220", 0 ],
+      "context_options": [ "498", 0 ]
+    },
+    "class_type": "WanVideoSampler",
+    "_meta": { "title": "WanVideo Sampler (LOW)" }
+  },
+  "541": {
+    "inputs": {
+      "width": [ "235", 0 ],
+      "height": [ "236", 0 ],
+      "num_frames": 121,
+      "vae": [ "129", 0 ],
+      "text_embeds": [ "135", 0 ]
+    },
+    "class_type": "WanVideoTextToVideoEncode",
+    "_meta": { "title": "WanVideo TextToVideo Encode" }
+  },
+  "549": {
+    "inputs": {
+      "model": "Wan2_2-T2V-A14B-LOW_fp8_e4m3fn_scaled_KJ.safetensors",
+      "base_precision": "bf16",
+      "quantization": "disabled",
+      "load_device": "offload_device",
+      "attention_mode": "sageattn",
+      "rms_norm_function": "default",
+      "block_swap_args": [ "525", 0 ]
+    },
+    "class_type": "WanVideoModelLoader",
+    "_meta": { "title": "WanVideo Model Loader (T2V LOW)" }
+  },
+  "552": {
+    "inputs": {
+      "model": [ "549", 0 ],
+      "lora": [ "553", 0 ]
+    },
+    "class_type": "WanVideoSetLoRAs",
+    "_meta": { "title": "WanVideo Set LoRAs (LOW)" }
+  },
+  "553": {
+    "inputs": {
+      "lora_0": "low_noise_model.safetensors",
+      "strength_0": 1,
+      "lora_1": "none",
+      "strength_1": 1,
+      "lora_2": "none",
+      "strength_2": 0.8,
+      "lora_3": "none",
+      "strength_3": 1,
+      "lora_4": "none",
+      "strength_4": 1,
+      "low_mem_load": false,
+      "merge_loras": false
+    },
+    "class_type": "WanVideoLoraSelectMulti",
+    "_meta": { "title": "WanVideo LoRA Select Multi (LOW)" }
+  },
+  "555": {
+    "inputs": {
+      "model": [ "122", 0 ],
+      "block_swap_args": [ "525", 0 ]
+    },
+    "class_type": "WanVideoSetBlockSwap",
+    "_meta": { "title": "WanVideo Set BlockSwap" }
+  },
+  "556": {
+    "inputs": {
+      "model": [ "555", 0 ],
+      "lora": [ "279", 0 ]
+    },
+    "class_type": "WanVideoSetLoRAs",
+    "_meta": { "title": "WanVideo Set LoRAs (HIGH)" }
+  },
+  "569": { "inputs": { "value": 10 }, "class_type": "INTConstant" },
+  "570": {
+    "inputs": {
+      "steps": [ "569", 0 ],
+      "cfg_scale_start": 2,
+      "cfg_scale_end": 2
+    },
+    "class_type": "CreateCFGScheduleFloatList"
+  },
+  "575": { "inputs": { "value": 4 }, "class_type": "INTConstant" },
+  "612": {
+    "inputs": {
+      "enable_vae_tiling": false,
+      "vae": [ "129", 0 ],
+      "samples": [ "540", 0 ]
+    },
+    "class_type": "WanVideoDecode",
+    "_meta": { "title": "WanVideo Decode" }
+  },
+  "131": {
+    "inputs": {
+      "frame_rate": 16,
+      "filename_prefix": "WanVideo_T2V_X264",
+      "format": "video/h264-mp4",
+      "save_output": true,
+      "images": [ "612", 0 ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": { "title": "Video Combine 🎥🅥🅗🅢" }
+  }
+}

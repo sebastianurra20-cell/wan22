@@ -1,0 +1,62 @@
+FROM wlsdml1114/multitalk-base:1.4 as runtime
+
+RUN pip install -U "huggingface_hub[hf_transfer]"
+RUN pip install runpod websocket-client
+
+WORKDIR /ComfyUI
+
+# ---- Instalar ComfyUI y nodos ----
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git . && \
+    pip install -r requirements.txt
+
+RUN cd custom_nodes && \
+    git clone https://github.com/Comfy-Org/ComfyUI-Manager.git && \
+    cd ComfyUI-Manager && pip install -r requirements.txt && cd ..
+
+RUN cd custom_nodes && \
+    git clone https://github.com/city96/ComfyUI-GGUF && \
+    cd ComfyUI-GGUF && pip install -r requirements.txt && cd ..
+
+RUN cd custom_nodes && \
+    git clone https://github.com/kijai/ComfyUI-KJNodes && \
+    cd ComfyUI-KJNodes && pip install -r requirements.txt && cd ..
+
+RUN cd custom_nodes && \
+    git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite && \
+    cd ComfyUI-VideoHelperSuite && pip install -r requirements.txt && cd ..
+
+RUN cd custom_nodes && \
+    git clone https://github.com/kijai/ComfyUI-WanVideoWrapper && \
+    cd ComfyUI-WanVideoWrapper && pip install -r requirements.txt && cd ..
+
+RUN cd custom_nodes && \
+    git clone https://github.com/orssorbit/ComfyUI-wanBlockswap
+
+RUN cd custom_nodes && \
+    git clone https://github.com/eddyhhlure1Eddy/ComfyUI-AdaptiveWindowSize && \
+    mv ComfyUI-AdaptiveWindowSize/ComfyUI-AdaptiveWindowSize/* . && rm -rf ComfyUI-AdaptiveWindowSize
+
+# ---- Descargar modelos ----
+RUN mkdir -p /ComfyUI/models/{diffusion_models,loras,clip_vision,text_encoders,vae}
+
+RUN wget -q https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/T2V/Wan2_2-T2V-A14B-HIGH_fp8_e4m3fn_scaled_KJ.safetensors -O models/diffusion_models/Wan2_2-T2V-A14B-HIGH_fp8_e4m3fn_scaled_KJ.safetensors && \
+    wget -q https://huggingface.co/Kijai/WanVideo_comfy_fp8_scaled/resolve/main/T2V/Wan2_2-T2V-A14B-LOW_fp8_e4m3fn_scaled_KJ.safetensors -O models/diffusion_models/Wan2_2-T2V-A14B-LOW_fp8_e4m3fn_scaled_KJ.safetensors && \
+    wget -q https://huggingface.co/lightx2v/Wan2.2-Lightning/resolve/main/Wan2.2-T2V-A14B-4steps-lora-250928/high_noise_model.safetensors -O models/loras/high_noise_model.safetensors && \
+    wget -q https://huggingface.co/lightx2v/Wan2.2-Lightning/resolve/main/Wan2.2-T2V-A14B-4steps-lora-250928/low_noise_model.safetensors -O models/loras/low_noise_model.safetensors && \
+    wget -q https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/umt5-xxl-enc-bf16.safetensors -O models/text_encoders/umt5-xxl-enc-bf16.safetensors && \
+    wget -q https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan2_1_VAE_bf16.safetensors -O models/vae/Wan2_1_VAE_bf16.safetensors
+
+# ---- Copiar workflows y entrypoint ----
+COPY new_Wan22_t2v_api.json /new_Wan22_t2v_api.json
+COPY handler_t2v.py /handler_t2v.py
+COPY extra_model_paths.yaml /ComfyUI/extra_model_paths.yaml
+COPY entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+RUN rm -rf /root/.cache/pip
+
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+ENV TORCH_CUDA_ARCH_LIST="8.6;8.9"
+
+CMD ["/entrypoint.sh"]
